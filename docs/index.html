@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fcfcfc">
+  <meta name="description" content="输入忘记的单词，记一笔。拾词会记下遗忘次数，帮你优先复习总是记不住的词。">
+  <title>拾词</title>
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="header">
+    <a href="#/record" class="brand" aria-label="拾词，记录单词">拾词<span class="brand-dot" aria-hidden="true"></span></a>
+    <nav class="nav" aria-label="主导航">
+      <a href="#/record" data-route="record">记一笔</a>
+      <a href="#/words" data-route="words">词本<span id="word-count" class="nav-count"></span></a>
+      <a href="#/review" data-route="review">复习<span id="due-count" class="due-count"></span></a>
+    </nav>
+    <button type="button" class="backup-trigger" data-action="backup" aria-label="打开词本备份">备份</button>
+  </header>
+  <div id="storage-warning" class="storage-warning" role="alert" hidden></div>
+  <main id="main" tabindex="-1"></main>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="edit-dialog" class="dialog" aria-labelledby="edit-title"></dialog>
+  <dialog id="backup-dialog" class="dialog" aria-labelledby="backup-title">
+    <div class="dialog-heading"><h2 id="backup-title">词本与备份</h2><button class="icon-button" data-action="close-backup" aria-label="关闭备份"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
+    <p class="dialog-intro">词本保存在当前浏览器。换设备或清理浏览器前，可以先导出一份。</p>
+    <div class="backup-row"><div><strong>导出词本</strong><p>下载包含词义和复习进度的 JSON 文件</p></div><button class="secondary-button" data-action="export">导出</button></div>
+    <div class="backup-row"><div><strong>导入词本</strong><p>合并备份，相同单词不会重复添加</p></div><button class="secondary-button" data-action="import">选择文件</button></div>
+    <input type="file" id="import-file" accept=".json,application/json" hidden>
+    <div class="backup-explanation"><h3>复习怎么安排？</h3><p>记得：依次在 1、3、7、14、30、90 天后再复习。连续记得 5 次后，进入「已记住」。忘记：10 分钟后再见，并重新开始间隔。</p><p>「已记住」的词仍会定期复习。手机和电脑的词本各自保存，可通过备份迁移；导入会保留较新的进度和较高的遗忘次数，不会叠加两台设备的次数。</p></div>
+    <p id="backup-status" class="form-status" role="status"></p>
+  </dialog>
+  <noscript><p class="noscript">拾词需要 JavaScript 来保存词本，请在浏览器中启用。</p></noscript>
+</body>
+</html>
