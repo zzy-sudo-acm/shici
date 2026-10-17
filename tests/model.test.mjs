@@ -38,6 +38,19 @@ test('再次忘记会重置间隔，10分钟后到期', () => {
   assert.equal(result.entry.lapses,2); assert.equal(result.entry.stage,0);
   assert.equal(result.entry.streak,0); assert.equal(result.entry.dueAt,now+DAY+600000);
 });
+test('提前练习成功不推进阶段或推迟到期，失败仍重新计时', () => {
+  let result=recordForgotten([], 'resilient',now);
+  result=reviewWord(result.words,result.entry.id,true,now);
+  const due=result.entry.dueAt;
+  for(let i=1;i<=6;i++) {
+    result=reviewWord(result.words,result.entry.id,true,now+i*1000);
+    assert.equal(result.entry.stage,1); assert.equal(result.entry.streak,1);
+    assert.equal(result.entry.dueAt,due);
+  }
+  result=reviewWord(result.words,result.entry.id,false,now+10000);
+  assert.equal(result.entry.stage,0); assert.equal(result.entry.lapses,2);
+  assert.equal(result.entry.dueAt,now+10000+600000);
+});
 test('随手记录遗忘立即重新安排，并按顽固程度优先复习', () => {
   let result=recordForgotten([], 'resilient',now);
   result=recordForgotten(result.words,'subtle',now);

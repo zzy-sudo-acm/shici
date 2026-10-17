@@ -1,8 +1,4 @@
 node_modules/
-.impeccable/review/
-.impeccable/build/
-.impeccable/mocks/
-.impeccable/concept-seeds/
-.impeccable/qa.cjs
+.impeccable/
 *.log
 .DS_Store

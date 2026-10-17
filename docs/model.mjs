@@ -92,9 +92,11 @@ export function reviewWord(words, id, remembered, now = Date.now()) {
   if (!previous) throw new Error('这个词已不在词本里，请重新开始复习。');
   const entry = {...previous, updatedAt: now};
   if (remembered) {
-    entry.stage = Math.min(INTERVALS.length, entry.stage + 1);
-    entry.streak += 1;
-    entry.dueAt = now + INTERVALS[entry.stage - 1] * DAY;
+    if (entry.dueAt <= now) {
+      entry.stage = Math.min(INTERVALS.length, entry.stage + 1);
+      entry.streak += 1;
+      entry.dueAt = now + INTERVALS[entry.stage - 1] * DAY;
+    }
   } else {
     entry.lapses += 1;
     entry.stage = 0;

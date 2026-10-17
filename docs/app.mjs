@@ -143,6 +143,11 @@ function startSession(practice = false) {
   renderReview();
 }
 
+function focusReviewContent() {
+  const target = $('.review-definition') || $('.review-word') || $('.review-end h1') || $('.review-page .empty-state h2');
+  if (target) { target.setAttribute('tabindex','-1'); target.focus({preventScroll:true}); }
+}
+
 function renderReview() {
   if (!session) {
     const due = dueWords(words);
@@ -252,6 +257,7 @@ function applyReview(remembered) {
   session.shown = false;
   session.index++;
   renderReview();
+  focusReviewContent();
   if (session.index>=session.ids.length) showToast(session.feedback);
 }
 
@@ -324,11 +330,11 @@ document.addEventListener('click', event => {
       $('#backup-status').textContent=corruptRaw?'原始数据已导出，请妥善保管。':'备份已下载。';
     }
     if (action==='import') $('#import-file').click();
-    if (action==='reveal' && session) { session.shown=true; session.feedback=''; renderReview(); }
+    if (action==='reveal' && session) { session.shown=true; session.feedback=''; renderReview(); focusReviewContent(); }
     if (action==='remembered') applyReview(true);
     if (action==='forgot') applyReview(false);
-    if (action==='practice') startSession(true);
-    if (action==='skip-word' && session) { session.index++; session.shown=false; session.feedback='已跳过，下次仍可复习。'; renderReview(); }
+    if (action==='practice') { startSession(true); focusReviewContent(); }
+    if (action==='skip-word' && session) { session.index++; session.shown=false; session.feedback='已跳过，下次仍可复习。'; renderReview(); focusReviewContent(); }
     if (action==='exit-review') { session=null; location.hash='/record'; }
     if (action==='finish-review') { session=null; location.hash='/words'; }
   } catch (err) { showToast(err.message); }
@@ -357,7 +363,7 @@ $('#import-file').addEventListener('change', async event => {
 document.addEventListener('keydown', event => {
   if (event.isComposing || $('#edit-dialog').open || $('#backup-dialog').open || /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
   if (currentRoute!=='review' || !session) return;
-  if (event.code==='Space' && !session.shown) { event.preventDefault(); session.shown=true; renderReview(); }
+  if (event.code==='Space' && !session.shown) { event.preventDefault(); session.shown=true; renderReview(); focusReviewContent(); }
   if (event.code==='ArrowLeft' && session.shown) { event.preventDefault(); try { applyReview(false); } catch(err) { showToast(err.message); } }
   if (event.code==='ArrowRight' && session.shown) { event.preventDefault(); try { applyReview(true); } catch(err) { showToast(err.message); } }
 });
