@@ -66,10 +66,10 @@ export function normalizeWord(value) {
   return word;
 }
 
-export const lookup = (word) => glossary[word] || ['', '', ''];
+export const lookup = (word) => Object.hasOwn(glossary, word) ? glossary[word] : ['', '', ''];
 export const makeId = () => globalThis.crypto.randomUUID();
 
-export function recordForgotten(words, value, now = Date.now()) {
+export function recordForgotten(words, value, now = Date.now(), definition = null) {
   const word = normalizeWord(value);
   const previous = words.find(w => w.word === word);
   if (!previous && words.length >= MAX_WORDS) throw new Error('词本已达 10,000 词，请先导出备份。');
@@ -78,6 +78,11 @@ export function recordForgotten(words, value, now = Date.now()) {
     id: makeId(), word, meaning, phonetic, pos, note: '',
     lapses: 0, stage: 0, streak: 0, createdAt: now, history: [],
   };
+  if (definition?.word === word) {
+    for (const [field, limit] of [['meaning', 1000], ['phonetic', 160], ['pos', 40]]) {
+      if ((!previous || !entry[field]) && typeof definition[field] === 'string' && definition[field]) entry[field] = definition[field].slice(0, limit);
+    }
+  }
   entry.lapses += 1;
   entry.stage = 0;
   entry.streak = 0;

@@ -1,4 +1,6 @@
 import {STORAGE_KEY, DAY, MASTERED_STAGE, normalizeWord, recordForgotten, reviewWord, dueWords, validateBackup, mergeBackup, exportBackup} from './model.mjs';
+import {createDictionary} from './dictionary.mjs';
+import {attachAutocomplete} from './autocomplete.mjs';
 
 const $ = (selector) => document.querySelector(selector);
 const e = (value) => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -20,6 +22,9 @@ let filter = 'all';
 let query = '';
 let session = null;
 let editingId = null;
+const dictionary = createDictionary();
+let autocomplete = null;
+let capturePending = false;
 
 function storageWarning(message) {
   $('#storage-warning').textContent = message;
@@ -88,12 +93,13 @@ function receiptHtml() {
   const word = words.find(w => w.id === lastAddedId);
   if (!word) return '';
   return `<section class="receipt" aria-label="刚刚记录的单词" role="status">
-    <div class="receipt-main"><span class="receipt-word">${e(word.word)}</span><span class="receipt-count">已记录 · 忘记 ${word.lapses} 次</span><div class="receipt-tools"><button class="text-button" data-action="edit" data-id="${word.id}">${word.meaning ? '编辑词义' : '补充词义'}</button>${undo ? '<button class="text-button" data-action="undo">撤销</button>' : ''}</div></div>
-    ${word.meaning ? `<p class="receipt-meaning">${e(word.pos)} ${e(word.meaning)}</p>` : '<p class="receipt-note">可以补充词义或助记，留给下次复习。</p>'}
+    <div class="receipt-main"><span class="receipt-word">${e(word.word)}</span><span class="receipt-count">已记录 · 忘记 ${word.lapses} 次</span><div class="receipt-tools">${!word.meaning ? `<button class="text-button" data-action="define" data-id="${word.id}">查词义</button>` : ''}<button class="text-button" data-action="edit" data-id="${word.id}">编辑词条</button>${undo ? '<button class="text-button" data-action="undo">撤销</button>' : ''}</div></div>
+    ${word.meaning ? `<p class="receipt-meaning">${e(word.pos)} ${e(word.meaning)}</p>` : '<p class="receipt-note">词义暂未找到，可以稍后再查。</p>'}
   </section>`;
 }
 
 function renderRecord(focus = false) {
+  autocomplete?.destroy();
   $('#main').innerHTML = `<div class="capture-page"><div class="capture-inner">
     <h1 class="sr-only">记录忘记的单词</h1>
     <form id="record-form" class="record-form" novalidate>
@@ -104,6 +110,7 @@ function renderRecord(focus = false) {
     <p id="record-error" class="record-error" role="alert"></p><p class="entry-hint"><kbd>Enter</kbd> 记录</p>
     ${receiptHtml()}
   </div></div>`;
+  autocomplete = attachAutocomplete($('#word-input'), {dictionary, personal: () => words, commit: captureWord});
   if (focus && matchMedia('(min-width: 701px)').matches) $('#word-input').focus();
 }
 
@@ -174,6 +181,7 @@ function renderReview() {
 }
 
 function route() {
+  autocomplete?.destroy(); autocomplete = null;
   const parsed = location.hash.replace(/^#\/?/, '');
   const next = ['record','words','review'].includes(parsed) ? parsed : 'record';
   if (next !== 'review') session = null;
@@ -186,10 +194,10 @@ function route() {
   window.scrollTo({top:0,behavior:'instant'});
 }
 
-function logWord(value) {
+function logWord(value, definition = null) {
   const before = words;
   const oldLast = lastAddedId;
-  const result = recordForgotten(words, value);
+  const result = recordForgotten(words, value, Date.now(), definition);
   persist(result.words);
   undo = {before, after: words, last: oldLast};
   lastAddedId = result.entry.id;
@@ -198,6 +206,53 @@ function logWord(value) {
     if (currentRoute === 'words') renderWords();
     showToast(`${result.entry.word} · 忘记 ${result.entry.lapses} 次`, true);
   }
+}
+
+async function captureWord(value, selected = null) {
+  if (capturePending) return;
+  const input = $('#word-input');
+  const button = $('#record-button');
+  try {
+    const term = normalizeWord(value);
+    capturePending = true;
+    autocomplete?.close();
+    if (selected && input) input.value = term;
+    if (input) input.disabled = true;
+    if (button) { button.disabled = true; button.textContent = '记录中'; }
+    let definition = selected;
+    if (!definition) {
+      try { definition = await dictionary.lookup(term); }
+      catch { /* Recording remains available when the dictionary is offline. */ }
+    }
+    capturePending = false;
+    logWord(term, definition);
+  } catch (error) {
+    if (currentRoute === 'record' && $('#record-error')) {
+      $('#record-error').textContent = error.message;
+      $('#word-input').setAttribute('aria-invalid','true');
+    } else showToast(error.message);
+  } finally {
+    capturePending = false;
+    if (input?.isConnected) input.disabled = false;
+    if (button?.isConnected) { button.textContent = '记一笔'; button.disabled = !input.value.trim(); }
+  }
+}
+
+async function fillDefinition(id, button) {
+  const word = words.find(entry => entry.id===id);
+  if (!word || button.disabled) return;
+  button.disabled = true; button.textContent = '查找中';
+  try {
+    const definition = await dictionary.lookup(word.word);
+    if (!definition) throw new Error('暂未找到这个词的释义，可以稍后再试，或在词条中补充。');
+    persist(words.map(entry => entry.id===id && entry.word===word.word && !entry.meaning ? {...entry, meaning:definition.meaning, phonetic:entry.phonetic || definition.phonetic, updatedAt:Date.now()} : entry));
+    undo = null;
+    if (currentRoute==='record') renderRecord();
+    if (currentRoute==='words') renderWords();
+    if (currentRoute==='review') renderReview();
+    showToast('已补全词义');
+  } catch (error) { showToast(error.message || '词典暂时无法加载，请稍后再试。'); }
+  finally { if (button.isConnected) { button.disabled=false; button.textContent='查词义'; } }
 }
 
 function undoLast() {
@@ -264,8 +319,7 @@ function applyReview(remembered) {
 document.addEventListener('submit', event => {
   if (event.target.id === 'record-form') {
     event.preventDefault();
-    try { logWord($('#word-input').value); }
-    catch (err) { $('#record-error').textContent = err.message; $('#word-input').setAttribute('aria-invalid','true'); }
+    captureWord($('#word-input').value);
   }
   if (event.target.id === 'edit-form') {
     event.preventDefault();
@@ -287,7 +341,7 @@ document.addEventListener('submit', event => {
 
 document.addEventListener('input', event => {
   if (event.target.id==='word-input') {
-    $('#record-button').disabled = !event.target.value.trim();
+    $('#record-button').disabled = capturePending || !event.target.value.trim();
     $('#record-error').textContent='';
     event.target.removeAttribute('aria-invalid');
   }
@@ -315,6 +369,7 @@ document.addEventListener('click', event => {
     if (action==='close-backup') $('#backup-dialog').close();
     if (action==='close-edit') $('#edit-dialog').close();
     if (action==='edit') openEdit(id);
+    if (action==='define') fillDefinition(id,button);
     if (action==='again') { const w=words.find(w => w.id===id); if(w) logWord(w.word); }
     if (action==='undo') undoLast();
     if (action==='speak') speak(id);

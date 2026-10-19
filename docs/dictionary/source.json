@@ -1,0 +1,115 @@
+{
+  "name": "ECDICT",
+  "source": "https://github.com/skywind3000/ECDICT",
+  "revision": "bc015ed2e24a7abef49fc6dbbb7fe32c1dadaf8b",
+  "license": "MIT",
+  "source_sha256": "1a6947e04785db63613a92e14903cdae7954f7e84860b10e68e5c7cbb3f9c3cf",
+  "words": 59079,
+  "shards": {
+    "a": {
+      "words": 3544,
+      "bytes": 253984
+    },
+    "b": {
+      "words": 3629,
+      "bytes": 240447
+    },
+    "c": {
+      "words": 5468,
+      "bytes": 397007
+    },
+    "d": {
+      "words": 3431,
+      "bytes": 243488
+    },
+    "e": {
+      "words": 2358,
+      "bytes": 173180
+    },
+    "f": {
+      "words": 2407,
+      "bytes": 175422
+    },
+    "g": {
+      "words": 2047,
+      "bytes": 142103
+    },
+    "h": {
+      "words": 2438,
+      "bytes": 167834
+    },
+    "i": {
+      "words": 2389,
+      "bytes": 187229
+    },
+    "j": {
+      "words": 639,
+      "bytes": 43571
+    },
+    "k": {
+      "words": 701,
+      "bytes": 44275
+    },
+    "l": {
+      "words": 2045,
+      "bytes": 142623
+    },
+    "m": {
+      "words": 3607,
+      "bytes": 254829
+    },
+    "n": {
+      "words": 1353,
+      "bytes": 94314
+    },
+    "o": {
+      "words": 1417,
+      "bytes": 107337
+    },
+    "p": {
+      "words": 4448,
+      "bytes": 349731
+    },
+    "q": {
+      "words": 255,
+      "bytes": 18716
+    },
+    "r": {
+      "words": 3079,
+      "bytes": 236633
+    },
+    "s": {
+      "words": 6298,
+      "bytes": 474934
+    },
+    "t": {
+      "words": 2881,
+      "bytes": 211114
+    },
+    "u": {
+      "words": 1774,
+      "bytes": 143044
+    },
+    "v": {
+      "words": 901,
+      "bytes": 67417
+    },
+    "w": {
+      "words": 1584,
+      "bytes": 111344
+    },
+    "x": {
+      "words": 40,
+      "bytes": 2384
+    },
+    "y": {
+      "words": 198,
+      "bytes": 12905
+    },
+    "z": {
+      "words": 148,
+      "bytes": 10142
+    }
+  },
+  "selection": "Chinese definitions; frequency, exam, Collins or Oxford tagged entries; normalized English words and phrases"
+}

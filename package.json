@@ -4,5 +4,5 @@
   "private": true,
   "type": "module",
   "description": "记录忘记的单词，优先复习顽固词。",
-  "scripts": {"dev": "node scripts/serve.mjs", "test": "node --test tests/*.test.mjs", "check": "node --check docs/app.mjs && node --check docs/model.mjs"}
+  "scripts": {"dev": "node scripts/serve.mjs", "test": "node --test tests/*.test.mjs", "check": "node --check docs/app.mjs && node --check docs/model.mjs && node --check docs/dictionary.mjs && node --check docs/autocomplete.mjs"}
 }

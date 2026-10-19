@@ -19,6 +19,23 @@ test('短语、撇号和连字符可用，HTML及超长输入被拒绝', () => {
 test('未知词仍保存，等待用户补充词义', () => {
   const result=recordForgotten([], 'serendipity',now);
   assert.equal(result.entry.meaning,''); assert.equal(result.entry.dueAt,now);
+  assert.equal(recordForgotten([], 'constructor',now).entry.meaning,'');
+});
+test('记录时带入词库释义和音标，无须用户填写中文', () => {
+  const definition={word:'serendipity',meaning:'n. 意外发现美好事物的运气',phonetic:'/ˌserənˈdɪpəti/',pos:''};
+  const result=recordForgotten([], 'serendipity',now,definition);
+  assert.equal(result.entry.meaning,definition.meaning);assert.equal(result.entry.phonetic,definition.phonetic);
+  assert.equal(result.entry.lapses,1);
+});
+test('已有词义不被词库覆盖，空词义可补全，错误单词的释义不混入', () => {
+  let result=recordForgotten([], 'serendipity',now);
+  const definition={word:'serendipity',meaning:'n. 意外的收获',phonetic:'/test/',pos:'n.'};
+  result=recordForgotten(result.words,'serendipity',now+1,definition);
+  assert.equal(result.entry.meaning,definition.meaning);assert.equal(result.entry.lapses,2);
+  result=recordForgotten(result.words,'serendipity',now+2,{...definition,meaning:'不应该覆盖'});
+  assert.equal(result.entry.meaning,definition.meaning);
+  const wrong=recordForgotten([], 'unknownword',now,definition);
+  assert.equal(wrong.entry.meaning,'');
 });
 test('成功回忆依次安排1/3/7/14/30/90天，五次后进入记住状态', () => {
   let {entry,words}=recordForgotten([], 'resilient',now);

@@ -37,6 +37,14 @@ typography:
     fontSize: "46px"
     fontWeight: 400
     lineHeight: 1.2
+  completion-word:
+    fontFamily: 'Georgia, "Times New Roman", serif'
+    fontSize: "20px"
+    lineHeight: 1.25
+  completion-meaning:
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif'
+    fontSize: "12px"
+    lineHeight: 1.5
 rounded:
   field: "8px"
   control: "10px"
@@ -171,6 +179,8 @@ components:
 ### Inputs / Fields
 
 首页入口只保留底线；聚焦时底线转深。输入为空时按钮禁用，非法内容在输入下方以错误文字和 `aria-invalid` 呈现。占位文字使用 `muted`，不能降低透明度。
+
+输入两个英文字母后才出现补全浮层，空首页保持原样。候选以英文词语和一行中文释义组成，不加图标或额外标题；词本里的词优先显示，完整匹配优先。浮层使用白底、细线和轻量阴影，响应手机键盘可翻转到输入上方。支持方向键、回车、Escape 和触控；输入通过 combobox/listbox 语义关联高亮候选。点击候选直接记录，并自动带入词义和音标。
 
 编辑弹窗使用白底、浅灰细边框字段，聚焦时边框和紧贴边缘的轮廓转为浅绿。词义与助记是可伸缩多行输入，所有字段有明确标签。
 

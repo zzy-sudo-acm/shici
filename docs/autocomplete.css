@@ -1,0 +1,49 @@
+.word-suggestions {
+  position: fixed;
+  inset: auto;
+  z-index: 30;
+  margin: 0;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 0 8px 28px #18281612;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #cdd4c9 transparent;
+}
+
+.suggestion-option {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 60px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+
+.suggestion-option[aria-selected="true"] { background: var(--soft); }
+.suggestion-word { font: 20px/1.25 Georgia, "Times New Roman", serif; overflow-wrap: anywhere; }
+.suggestion-meaning {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.suggestion-message { margin: 0; padding: 12px; font-size: 12px; line-height: 1.8; color: var(--muted); }
+.suggestion-retry { margin: 0 12px 8px; min-height: 30px; }
+
+@media (max-width: 700px) {
+  .suggestion-option { padding-inline: 10px; }
+  .suggestion-word { font-size: 20px; }
+}
