@@ -3,13 +3,13 @@
   inset: auto;
   z-index: 30;
   margin: 0;
-  padding: 8px;
+  padding: 7px;
   box-sizing: border-box;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: 14px;
   background: #fff;
   color: var(--ink);
-  box-shadow: 0 8px 28px #18281612;
+  box-shadow: 0 10px 28px #20372a0c;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -19,24 +19,28 @@
 .suggestion-option {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  min-height: 60px;
-  padding: 8px 12px;
-  border-radius: 8px;
+  gap: 5px;
+  min-height: 76px;
+  padding: 11px 14px;
+  border-radius: 9px;
   cursor: pointer;
   touch-action: pan-y;
+  transition: background-color 110ms ease-out;
 }
 
-.suggestion-option[aria-selected="true"] { background: var(--soft); }
-.suggestion-word { font: 20px/1.25 Georgia, "Times New Roman", serif; overflow-wrap: anywhere; }
+.suggestion-option[aria-selected="true"] { background: #eaf1e9; }
+.suggestion-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; min-width: 0; }
+.suggestion-word { min-width: 0; font: 22px/1.25 Georgia, "Times New Roman", serif; overflow-wrap: anywhere; }
+.suggestion-phonetic { max-width: 48%; color: var(--muted); font-size: 12px; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.suggestion-history { flex-shrink: 0; font-size: 10px; line-height: 1.6; padding: 3px 6px; background: #e4eee3; color: var(--green); border-radius: 5px; font-variant-numeric: tabular-nums; }
 .suggestion-meaning {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   overflow: hidden;
   color: var(--muted);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 13px;
+  line-height: 1.6;
   overflow-wrap: anywhere;
 }
 
@@ -44,6 +48,6 @@
 .suggestion-retry { margin: 0 12px 8px; min-height: 30px; }
 
 @media (max-width: 700px) {
-  .suggestion-option { padding-inline: 10px; }
-  .suggestion-word { font-size: 20px; }
+  .suggestion-option { padding-inline: 12px; }
+  .suggestion-word { font-size: 21px; }
 }

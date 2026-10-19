@@ -2,13 +2,14 @@
 name: 拾词
 description: 以留白、细线和清楚的文字支持随手记录与主动回忆。
 colors:
-  background: "#fcfcfc"
-  ink: "#242624"
-  muted: "#6c716d"
-  line: "#e8ebe7"
-  soft: "#f2f4f1"
-  green: "#49664c"
-  danger: "#9d473d"
+  background: "#f7f8f5"
+  paper: "#ffffff"
+  ink: "#27332b"
+  muted: "#66716a"
+  line: "#e0e6df"
+  soft: "#edf2ed"
+  green: "#2b5e4e"
+  danger: "#a0473b"
 typography:
   body:
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif'
@@ -20,35 +21,37 @@ typography:
     fontWeight: 400
   title:
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif'
-    fontSize: "24px"
-    fontWeight: 500
-    letterSpacing: ".02em"
+    fontSize: "25px"
+    fontWeight: 600
+    letterSpacing: ".015em"
   input:
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif'
     fontSize: "22px"
     lineHeight: 1.5
   word:
     fontFamily: 'Georgia, "Times New Roman", serif'
-    fontSize: "23px"
+    fontSize: "24px"
     fontWeight: 400
     lineHeight: 1.3
   review-word:
     fontFamily: 'Georgia, "Times New Roman", serif'
-    fontSize: "46px"
+    fontSize: "52px"
     fontWeight: 400
     lineHeight: 1.2
   completion-word:
     fontFamily: 'Georgia, "Times New Roman", serif'
-    fontSize: "20px"
+    fontSize: "22px"
     lineHeight: 1.25
   completion-meaning:
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif'
-    fontSize: "12px"
-    lineHeight: 1.5
+    fontSize: "13px"
+    lineHeight: 1.6
 rounded:
-  field: "8px"
+  field: "9px"
   control: "10px"
-  dialog: "16px"
+  composer: "16px"
+  completion: "14px"
+  dialog: "18px"
 spacing:
   compact: "8px"
   small: "12px"
@@ -58,17 +61,17 @@ spacing:
   wide: "48px"
 components:
   button-primary:
-    backgroundColor: "{colors.ink}"
+    backgroundColor: "{colors.green}"
     textColor: "#ffffff"
     rounded: "{rounded.control}"
     padding: "0 23px"
     height: "44px"
   button-secondary:
-    backgroundColor: "transparent"
+    backgroundColor: "{colors.paper}"
     textColor: "{colors.ink}"
     rounded: "{rounded.control}"
     padding: "0 19px"
-    height: "42px"
+    height: "44px"
   button-secondary-hover:
     backgroundColor: "{colors.soft}"
   entry-input:
@@ -76,15 +79,19 @@ components:
     textColor: "{colors.ink}"
     typography: "{typography.input}"
     rounded: "0"
-    padding: "12px 2px"
-    height: "60px"
+    padding: "4px 0"
+    height: "52px"
+  record-form:
+    backgroundColor: "{colors.paper}"
+    rounded: "{rounded.composer}"
+    padding: "16px 16px 16px 23px"
   dialog-field:
-    backgroundColor: "#ffffff"
+    backgroundColor: "#fbfcfa"
     textColor: "{colors.ink}"
     rounded: "{rounded.field}"
     padding: "11px 12px"
   dialog:
-    backgroundColor: "{colors.background}"
+    backgroundColor: "{colors.paper}"
     textColor: "{colors.ink}"
     rounded: "{rounded.dialog}"
     padding: "27px 30px 30px"
@@ -97,7 +104,9 @@ components:
 
 **Creative North Star: "随手一笔"**
 
-拾词是安静、直接的个人记录工具。界面用接近白色的背景、深灰文字和宽松留白承载内容，结构来自文字对齐与细线。绿色只提示与记忆有关的状态，让输入、单词与判断动作始终清楚。
+拾词是安静、直接的个人记录工具。界面采用灰白背景、白色操作表面、深灰文字和少量深绿色。统一的字号、内边距、圆角和状态反馈建立日常软件的完整感；真实的英文单词是内容的视觉重点。
+
+用户提供的 Notion、Telegram、WhatsApp、Instagram 和 Claude 桌面端是产品审美与交互质量参考；本次延续拾词的白灰绿色系，整理录词、选词和记录反馈，不复制聊天功能、页面标题或品牌装饰。
 
 中文界面使用系统无衬线，英文词条使用 Georgia。字号差异服务于当前任务：记录时突出输入，查看时突出词条，回忆时突出正在想的单词。页面组成和首屏约束见 `.impeccable/surface.md`；本文件记录可复用的视觉系统，以 `docs/styles.css` 的已实现值为依据。
 
@@ -140,17 +149,17 @@ components:
 
 - **Title**：词本页标题及同级小标题；移动端词本标题缩为（22px）。
 - **Body / Label**：正文与操作说明多为（13–14px），时间、计数和快捷键提示为（10–12px）；说明段落行高通常为（1.7–1.9）。
-- **Input**：首页输入的独立层级；移动端输入缩为（20px），占位文字为（16px），最窄断点为（14px）。
+- **Input**：首页输入在白色录词区内；桌面占位文字为（18px），实际英文输入使用 Georgia（30px）；移动端实际输入为（26px），占位文字（16px），最窄断点为（14px）。
 - **Word**：列表英文词条；移动端为（22px）。刚记录的单词为（24px），移动端为（22px）。
-- **Review Word**：当前回忆的唯一大字；移动端缩为（40px）。
+- **Review Word**：当前回忆的唯一大字；移动端缩为（43px）。
 
 **The Word First Rule.** 衬线与大字号用于识别英文单词；中文导航、释义与说明保持系统无衬线。
 
 ## Layout
 
-全局页头保持单行，品牌在左，文字导航和备份入口在右。桌面页头高（88px）、水平内边距（48px）；移动端高（76px）、水平内边距（22px）。
+全局页头保持单行，带有记录图形的字标在左，文字导航和备份入口在右。桌面页头高（84px），最大宽（1360px）、水平内边距（40px）；移动端高（76px）、水平内边距（20px），最窄断点为（16px）。
 
-内容按任务采用独立宽度：记录区域最大（660px），大屏断点扩至（720px）；词本容器最大（960px），两侧内边距（32px）；复习区域最大（660px）。记录和复习区域在可视高度内居中，并为底部留出更多空间，视觉中心略高于屏幕中线。
+内容按任务采用独立宽度：记录区域最大（680px），大屏断点扩至（720px）；词本容器最大（960px），两侧内边距（32px）；复习区域最大（660px）。记录和复习区域在可视高度内居中，并为底部留出更多空间，视觉中心略高于屏幕中线。
 
 列表是单列细线结构。桌面每行由词条与释义、遗忘次数、操作组成，主内容内部再按两列对齐；移动端词义落到单词下方，次数和操作仍保持靠右。搜索在移动端单独占一行。
 
@@ -164,7 +173,7 @@ components:
 
 ## Shapes
 
-首页输入是平直的单条底线，不带包围式外框。列表用横向细线分隔。按钮使用温和圆角；普通表单字段更紧凑，弹窗圆角更宽。圆形只出现在小品牌点和复习完成标记等局部。
+首页的输入和记录按钮组成白色圆角录词区，以一条浅绿灰边界和内边距建立整体感，聚焦时边界加深并出现柔和轮廓。列表仍用横向细线分隔。按钮和表单字段采用统一的温和圆角，弹窗圆角更宽。
 
 线性图标采用圆端点与圆连接，常规尺寸（20px），搜索图标为（16px）。图标限于朗读、搜索、关闭与完成等有意义的动作或状态。
 
@@ -172,13 +181,13 @@ components:
 
 ### Buttons
 
-主要按钮为炭墨实底、白色文字，明确写出「记一笔」「看词义」「记得」「保存」等动作。次级按钮为透明底与浅灰描边，悬停使用浅雾面。小型操作以无底色文字按钮呈现，图标按钮为（36px）方形点击区。
+主要按钮为深绿实底、白色文字，明确写出「记一笔」「看词义」「记得」「保存」等动作。次级按钮为白底与浅灰描边，悬停使用浅雾面。小型操作以无底色文字按钮呈现，图标按钮为（38px）方形点击区。成功记录后，按钮短暂显示「已记下」，再次输入时立即恢复。
 
 悬停反馈轻微变暗；主要按钮按下时下移（1px）。空输入时「记一笔」使用灰底禁用态。通用键盘焦点为绿色（2px）轮廓，偏移（5px）；具体输入控件采用自己的底线或边框焦点态。
 
 ### Inputs / Fields
 
-首页入口只保留底线；聚焦时底线转深。输入为空时按钮禁用，非法内容在输入下方以错误文字和 `aria-invalid` 呈现。占位文字使用 `muted`，不能降低透明度。
+首页输入本身透明无边框，由白色录词区统一承载；聚焦轮廓显示在整个区域。输入为空时按钮禁用，非法内容通过区域边界、错误文字和 `aria-invalid` 呈现。占位文字使用 `muted`，不能降低透明度。下方只提供补全和回车的轻量操作提示。
 
 输入两个英文字母后才出现补全浮层，空首页保持原样。候选以英文词语和一行中文释义组成，不加图标或额外标题；词本里的词优先显示，完整匹配优先。浮层使用白底、细线和轻量阴影，响应手机键盘可翻转到输入上方。支持方向键、回车、Escape 和触控；输入通过 combobox/listbox 语义关联高亮候选。点击候选直接记录，并自动带入词义和音标。
 
@@ -186,7 +195,7 @@ components:
 
 ### Navigation
 
-导航为普通文字链接，当前页文字变深并带短下划线。词本数量为小号数字；有待复习内容时出现浅绿数量标记。移动端隐藏词本总数以节省空间，仍保留待复习提示。筛选按钮沿用文字加短下划线的方式，不使用分段胶囊。
+导航为文字链接，当前页使用浅绿色选中背景，悬停提供轻量表面反馈。词本数量为小号数字；有待复习内容时出现浅绿数量标记。移动端隐藏词本总数以节省空间，仍保留待复习提示。筛选仍使用文字和下划线。
 
 ### Word List
 
@@ -194,7 +203,7 @@ components:
 
 ### Record Receipt
 
-记录成功后才在输入下方显示刚录入的单词、累计遗忘次数、释义或补充提示，以及编辑和撤销动作。反馈直接进入留白区，没有容器外框。短暂入场动效为（180ms），减少动态效果偏好下关闭。
+记录成功后才在输入下方显示确认标记、英文单词、遗忘次数标签、释义或补充提示，以及编辑和撤销动作。反馈直接进入留白区，没有容器外框。按钮同时短暂显示「已记下」。短暂入场动效为（180ms），减少动态效果偏好下关闭。
 
 ### Recall Stage
 

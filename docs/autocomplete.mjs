@@ -26,7 +26,7 @@ export function attachAutocomplete(input, {dictionary, personal, commit}) {
     const top = viewport?.offsetTop || 0;
     const bottom = top + (viewport?.height || innerHeight);
     const below = bottom - rect.bottom - 16, above = rect.top - top - 16;
-    const desired = Math.min(items.length ? items.length * 61 + 16 : 64, 380);
+    const desired = Math.min(items.length ? items.length * 76 + 16 : 72, 400);
     const upwards = below < desired && above > below;
     const height = Math.min(desired, Math.max(70, upwards ? above : below));
     panel.style.width = `${Math.min(rect.width, innerWidth - 32)}px`;
@@ -58,10 +58,17 @@ export function attachAutocomplete(input, {dictionary, personal, commit}) {
       const option = document.createElement('div'); option.id = `word-option-${index}`;
       option.className = 'suggestion-option'; option.dataset.index = String(index);
       option.setAttribute('role', 'option'); option.setAttribute('aria-selected', 'false');
-      option.setAttribute('aria-label', `${entry.word}，${entry.meaning || '暂无词义'}，选择并记录`);
+      option.setAttribute('aria-label', `${entry.word}，${entry.meaning || '暂无词义'}${entry.lapses ? `，已忘记 ${entry.lapses} 次` : ''}，选择并记录`);
+      const heading = document.createElement('div'); heading.className = 'suggestion-heading';
       const term = document.createElement('span'); term.className = 'suggestion-word'; term.textContent = entry.word;
+      heading.append(term);
+      if (entry.lapses) {
+        const history = document.createElement('span'); history.className='suggestion-history'; history.textContent=`忘过 ${entry.lapses} 次`; heading.append(history);
+      } else if (entry.phonetic) {
+        const phonetic = document.createElement('span'); phonetic.className='suggestion-phonetic'; phonetic.textContent=entry.phonetic; heading.append(phonetic);
+      }
       const meaning = document.createElement('span'); meaning.className = 'suggestion-meaning'; meaning.textContent = entry.meaning || '已在词本中';
-      option.append(term, meaning); panel.append(option);
+      option.append(heading, meaning); panel.append(option);
     });
     announcement.textContent = items.length ? `找到 ${items.length} 个候选，用上下方向键选择，回车记录。` : '没有匹配的候选。';
     open();

@@ -25,6 +25,7 @@ let editingId = null;
 const dictionary = createDictionary();
 let autocomplete = null;
 let capturePending = false;
+let recordFeedbackTimer;
 
 function storageWarning(message) {
   $('#storage-warning').textContent = message;
@@ -93,12 +94,13 @@ function receiptHtml() {
   const word = words.find(w => w.id === lastAddedId);
   if (!word) return '';
   return `<section class="receipt" aria-label="刚刚记录的单词" role="status">
-    <div class="receipt-main"><span class="receipt-word">${e(word.word)}</span><span class="receipt-count">已记录 · 忘记 ${word.lapses} 次</span><div class="receipt-tools">${!word.meaning ? `<button class="text-button" data-action="define" data-id="${word.id}">查词义</button>` : ''}<button class="text-button" data-action="edit" data-id="${word.id}">编辑词条</button>${undo ? '<button class="text-button" data-action="undo">撤销</button>' : ''}</div></div>
+    <div class="receipt-main"><span class="receipt-save" aria-hidden="true">${icons.check}</span><span class="receipt-word">${e(word.word)}</span><span class="receipt-count">已记录 · 忘记 ${word.lapses} 次</span><div class="receipt-tools">${!word.meaning ? `<button class="text-button" data-action="define" data-id="${word.id}">查词义</button>` : ''}<button class="text-button" data-action="edit" data-id="${word.id}">编辑词条</button>${undo ? '<button class="text-button" data-action="undo">撤销</button>' : ''}</div></div>
     ${word.meaning ? `<p class="receipt-meaning">${e(word.pos)} ${e(word.meaning)}</p>` : '<p class="receipt-note">词义暂未找到，可以稍后再查。</p>'}
   </section>`;
 }
 
 function renderRecord(focus = false) {
+  clearTimeout(recordFeedbackTimer);
   autocomplete?.destroy();
   $('#main').innerHTML = `<div class="capture-page"><div class="capture-inner">
     <h1 class="sr-only">记录忘记的单词</h1>
@@ -107,10 +109,18 @@ function renderRecord(focus = false) {
       <input id="word-input" class="word-input" name="word" type="text" placeholder="输入忘记的单词" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="80" enterkeyhint="send" aria-describedby="record-error">
       <button id="record-button" class="record-button" type="submit" disabled>记一笔</button>
     </form>
-    <p id="record-error" class="record-error" role="alert"></p><p class="entry-hint"><kbd>Enter</kbd> 记录</p>
+    <div class="entry-helper"><span>输入前几个字母，即可补全</span><span class="entry-hint"><kbd>Enter</kbd> 记录</span></div>
+    <p id="record-error" class="record-error" role="alert"></p>
     ${receiptHtml()}
   </div></div>`;
   autocomplete = attachAutocomplete($('#word-input'), {dictionary, personal: () => words, commit: captureWord});
+  if (focus) {
+    const button = $('#record-button');
+    button.textContent = '已记下'; button.dataset.saved = 'true';
+    recordFeedbackTimer = setTimeout(() => {
+      if (button.isConnected && button.dataset.saved) { button.textContent='记一笔'; delete button.dataset.saved; }
+    }, 1000);
+  }
   if (focus && matchMedia('(min-width: 701px)').matches) $('#word-input').focus();
 }
 
@@ -341,6 +351,8 @@ document.addEventListener('submit', event => {
 
 document.addEventListener('input', event => {
   if (event.target.id==='word-input') {
+    clearTimeout(recordFeedbackTimer);
+    $('#record-button').textContent = '记一笔'; delete $('#record-button').dataset.saved;
     $('#record-button').disabled = capturePending || !event.target.value.trim();
     $('#record-error').textContent='';
     event.target.removeAttribute('aria-invalid');
